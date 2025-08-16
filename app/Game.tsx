@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, Share2, PlayCircle, XCircle, CheckCircle2, ArrowUp, ArrowDown } from "lucide-react";
 
 /*
-Final build — Reveal-after + 200+ companies
-------------------------------------------
+Final build — Reveal-after + 200+ companies + Animated Home
+-----------------------------------------------------------
 • Press More/Less → THEN the number animates upward (slightly brisk, eases near the end).
 • Result (correct/wrong) ONLY shown after the number fully reveals.
 • Subtle feedback: green pulse on correct; red ring + shake on wrong.
@@ -15,6 +15,7 @@ Final build — Reveal-after + 200+ companies
 • Framer Motion: keyframe shakes use tween for x (spring only for scale) → fixes error.
 • Logos via Clearbit <img> (no Next Image domain config needed).
 • Tailwind colors: blue/grey/white palette.
+• NEW: Home screen with animated aurora background, marquee logos, and feature cards.
 */
 
 // ---------- Styles ----------
@@ -208,203 +209,85 @@ const EXTRA: Company[] = [
   { name: "Bristol Myers Squibb", ticker: "BMY", domain: "bms.com", cap: 90, country: "US" },
   { name: "Amgen", ticker: "AMGN", domain: "amgen.com", cap: 160, country: "US" },
   { name: "Gilead Sciences", ticker: "GILD", domain: "gilead.com", cap: 90, country: "US" },
-  { name: "Regeneron", ticker: "REGN", domain: "regeneron.com", cap: 120, country: "US" },
-  { name: "AstraZeneca", ticker: "AZN", domain: "astrazeneca.com", cap: 260, country: "UK" },
-  { name: "Sanofi", ticker: "SAN.PA", domain: "sanofi.com", cap: 130, country: "FR" },
-  { name: "GlaxoSmithKline", ticker: "GSK", domain: "gsk.com", cap: 90, country: "UK" },
-  { name: "CSL Limited", ticker: "CSL.AX", domain: "csl.com", cap: 100, country: "AU" },
-  { name: "Thermo Fisher", ticker: "TMO", domain: "thermofisher.com", cap: 220, country: "US" },
-  { name: "Danaher", ticker: "DHR", domain: "danaher.com", cap: 180, country: "US" },
-  { name: "Abbott", ticker: "ABT", domain: "abbott.com", cap: 190, country: "US" },
-  { name: "Medtronic", ticker: "MDT", domain: "medtronic.com", cap: 120, country: "IE" },
-  { name: "Stryker", ticker: "SYK", domain: "stryker.com", cap: 130, country: "US" },
+  { name: "Sanofi", ticker: "SAN.PA", domain: "sanofi.com", cap: 140, country: "FR" },
+  { name: "AstraZeneca", ticker: "AZN", domain: "astrazeneca.com", cap: 240, country: "UK" },
+  { name: "GlaxoSmithKline", ticker: "GSK", domain: "gsk.com", cap: 80, country: "UK" },
+  { name: "Bayer", ticker: "BAYN.DE", domain: "bayer.com", cap: 50, country: "DE" },
   { name: "Siemens Healthineers", ticker: "SHL.DE", domain: "siemens-healthineers.com", cap: 70, country: "DE" },
-  { name: "GE HealthCare", ticker: "GEHC", domain: "gehealthcare.com", cap: 50, country: "US" },
-  { name: "Intuitive Surgical", ticker: "ISRG", domain: "intuitive.com", cap: 120, country: "US" },
-  { name: "Dexcom", ticker: "DXCM", domain: "dexcom.com", cap: 40, country: "US" },
-  { name: "Edwards Lifesciences", ticker: "EW", domain: "edwards.com", cap: 50, country: "US" },
-
-  // Energy & Materials
-  { name: "Shell", ticker: "SHEL", domain: "shell.com", cap: 230, country: "UK" },
-  { name: "ConocoPhillips", ticker: "COP", domain: "conocophillips.com", cap: 130, country: "US" },
-  { name: "Petrobras", ticker: "PBR", domain: "petrobras.com.br", cap: 110, country: "BR" },
-  { name: "Equinor", ticker: "EQNR", domain: "equinor.com", cap: 80, country: "NO" },
-  { name: "ENI", ticker: "ENI.MI", domain: "eni.com", cap: 55, country: "IT" },
-  { name: "Repsol", ticker: "REP.MC", domain: "repsol.com", cap: 25, country: "ES" },
-  { name: "Occidental Petroleum", ticker: "OXY", domain: "oxy.com", cap: 60, country: "US" },
-  { name: "Schlumberger", ticker: "SLB", domain: "slb.com", cap: 70, country: "US" },
-  { name: "Halliburton", ticker: "HAL", domain: "halliburton.com", cap: 35, country: "US" },
-  { name: "Baker Hughes", ticker: "BKR", domain: "bakerhughes.com", cap: 35, country: "US" },
-  { name: "CNOOC", ticker: "0883.HK", domain: "cnooc.com.cn", cap: 80, country: "CN" },
-  { name: "PetroChina", ticker: "0857.HK", domain: "petrochina.com.cn", cap: 200, country: "CN" },
-  { name: "Reliance Industries", ticker: "RELIANCE.NS", domain: "ril.com", cap: 220, country: "IN" },
-  { name: "Adani Enterprises", ticker: "ADANIENT.NS", domain: "adani.com", cap: 50, country: "IN" },
-  { name: "BHP", ticker: "BHP", domain: "bhp.com", cap: 160, country: "AU" },
-  { name: "Rio Tinto", ticker: "RIO", domain: "riotinto.com", cap: 120, country: "UK" },
-  { name: "Vale", ticker: "VALE", domain: "vale.com", cap: 70, country: "BR" },
-  { name: "Glencore", ticker: "GLEN.L", domain: "glencore.com", cap: 70, country: "CH" },
-  { name: "Anglo American", ticker: "AAL.L", domain: "angloamerican.com", cap: 40, country: "UK" },
-  { name: "Freeport‑McMoRan", ticker: "FCX", domain: "fcx.com", cap: 70, country: "US" },
-  { name: "Newmont", ticker: "NEM", domain: "newmont.com", cap: 35, country: "US" },
-  { name: "Barrick Gold", ticker: "GOLD", domain: "barrick.com", cap: 30, country: "CA" },
-  { name: "ArcelorMittal", ticker: "MT", domain: "corporate.arcelormittal.com", cap: 25, country: "LU" },
-  { name: "Nucor", ticker: "NUE", domain: "nucor.com", cap: 40, country: "US" },
-
-  // Utilities & Renewables
-  { name: "NextEra Energy", ticker: "NEE", domain: "nexteraenergy.com", cap: 120, country: "US" },
-  { name: "Duke Energy", ticker: "DUK", domain: "duke-energy.com", cap: 75, country: "US" },
-  { name: "Southern Company", ticker: "SO", domain: "southerncompany.com", cap: 70, country: "US" },
-  { name: "Dominion Energy", ticker: "D", domain: "dominionenergy.com", cap: 45, country: "US" },
-  { name: "Iberdrola", ticker: "IBE.MC", domain: "iberdrola.com", cap: 80, country: "ES" },
-  { name: "Enel", ticker: "ENEL.MI", domain: "enel.com", cap: 70, country: "IT" },
-  { name: "EDF", ticker: "EDF.PA", domain: "edf.fr", cap: 50, country: "FR" },
-  { name: "Engie", ticker: "ENGI.PA", domain: "engie.com", cap: 40, country: "FR" },
-  { name: "National Grid", ticker: "NG.L", domain: "nationalgrid.com", cap: 50, country: "UK" },
-
-  // Telecom & Media
-  { name: "AT&T", ticker: "T", domain: "att.com", cap: 130, country: "US" },
-  { name: "Verizon", ticker: "VZ", domain: "verizon.com", cap: 170, country: "US" },
-  { name: "T‑Mobile US", ticker: "TMUS", domain: "t-mobile.com", cap: 190, country: "US" },
-  { name: "Comcast", ticker: "CMCSA", domain: "comcast.com", cap: 180, country: "US" },
-  { name: "Charter", ticker: "CHTR", domain: "spectrum.com", cap: 110, country: "US" },
-  { name: "Disney", ticker: "DIS", domain: "thewaltdisneycompany.com", cap: 200, country: "US" },
-  { name: "Warner Bros. Discovery", ticker: "WBD", domain: "wbd.com", cap: 25, country: "US" },
-  { name: "Paramount Global", ticker: "PARA", domain: "paramount.com", cap: 10, country: "US" },
-  { name: "Universal Music Group", ticker: "UMG.AS", domain: "umg.com", cap: 50, country: "NL" },
-  { name: "BT Group", ticker: "BT.A", domain: "bt.com", cap: 15, country: "UK" },
-  { name: "Vodafone", ticker: "VOD.L", domain: "vodafone.com", cap: 25, country: "UK" },
-  { name: "Orange", ticker: "ORA.PA", domain: "orange.com", cap: 30, country: "FR" },
-  { name: "Telefónica", ticker: "TEF", domain: "telefonica.com", cap: 25, country: "ES" },
-  { name: "Deutsche Telekom", ticker: "DTE.DE", domain: "telekom.com", cap: 120, country: "DE" },
-  { name: "NTT", ticker: "9432.T", domain: "ntt.com", cap: 90, country: "JP" },
-  { name: "KDDI", ticker: "9433.T", domain: "kddi.com", cap: 60, country: "JP" },
-  { name: "China Mobile", ticker: "0941.HK", domain: "chinamobileltd.com", cap: 130, country: "CN" },
+  { name: "Medtronic", ticker: "MDT", domain: "medtronic.com", cap: 120, country: "IE" },
 
   // Consumer & Retail
-  { name: "Target", ticker: "TGT", domain: "target.com", cap: 65, country: "US" },
+  { name: "Starbucks", ticker: "SBUX", domain: "starbucks.com", cap: 100, country: "US" },
+  { name: "McDonald's", ticker: "MCD", domain: "mcdonalds.com", cap: 200, country: "US" },
+  { name: "Chipotle", ticker: "CMG", domain: "chipotle.com", cap: 90, country: "US" },
+  { name: "Target", ticker: "TGT", domain: "target.com", cap: 80, country: "US" },
   { name: "Lowe's", ticker: "LOW", domain: "lowes.com", cap: 120, country: "US" },
-  { name: "Inditex (Zara)", ticker: "ITX.MC", domain: "inditex.com", cap: 140, country: "ES" },
-  { name: "H&M", ticker: "HM‑B.ST", domain: "hm.com", cap: 25, country: "SE" },
-  { name: "Fast Retailing (Uniqlo)", ticker: "9983.T", domain: "fastretailing.com", cap: 80, country: "JP" },
-  { name: "Adidas", ticker: "ADS.DE", domain: "adidas.com", cap: 40, country: "DE" },
+  { name: "IKEA (Ingka)", ticker: "INGKA-P", domain: "ikea.com", cap: 70, country: "SE" },
+  { name: "Inditex (Zara)", ticker: "ITX.MC", domain: "inditex.com", cap: 150, country: "ES" },
+  { name: "H&M", ticker: "HM-B.ST", domain: "hm.com", cap: 30, country: "SE" },
+  { name: "L'Oréal", ticker: "OR.PA", domain: "loreal.com", cap: 250, country: "FR" },
+  { name: "Estée Lauder", ticker: "EL", domain: "esteelauder.com", cap: 80, country: "US" },
   { name: "Hermès", ticker: "RMS.PA", domain: "hermes.com", cap: 250, country: "FR" },
   { name: "Kering", ticker: "KER.PA", domain: "kering.com", cap: 60, country: "FR" },
-  { name: "Richemont", ticker: "CFR.SW", domain: "richemont.com", cap: 90, country: "CH" },
-  { name: "Moncler", ticker: "MONC.MI", domain: "moncler.com", cap: 20, country: "IT" },
-  { name: "Prada", ticker: "1913.HK", domain: "prada.com", cap: 20, country: "IT" },
-  { name: "Burberry", ticker: "BRBY.L", domain: "burberry.com", cap: 8, country: "UK" },
-  { name: "Starbucks", ticker: "SBUX", domain: "starbucks.com", cap: 100, country: "US" },
-  { name: "Yum! Brands", ticker: "YUM", domain: "yum.com", cap: 35, country: "US" },
-  { name: "Chipotle", ticker: "CMG", domain: "chipotle.com", cap: 80, country: "US" },
-  { name: "Lululemon", ticker: "LULU", domain: "lululemon.com", cap: 45, country: "CA" },
-  { name: "IKEA (Ingka)", ticker: "IKEA‑P", domain: "ikea.com", cap: 60, country: "SE" },
-
-  { name: "Unilever", ticker: "ULVR.L", domain: "unilever.com", cap: 120, country: "UK" },
-  { name: "Colgate‑Palmolive", ticker: "CL", domain: "colgatepalmolive.com", cap: 70, country: "US" },
-  { name: "Mondelez", ticker: "MDLZ", domain: "mondelezinternational.com", cap: 100, country: "US" },
-  { name: "Danone", ticker: "BN.PA", domain: "danone.com", cap: 40, country: "FR" },
-  { name: "Heineken", ticker: "HEIA.AS", domain: "theheinekencompany.com", cap: 55, country: "NL" },
-  { name: "AB InBev", ticker: "ABI.BR", domain: "ab-inbev.com", cap: 110, country: "BE" },
-  { name: "Diageo", ticker: "DGE.L", domain: "diageo.com", cap: 90, country: "UK" },
-  { name: "L'Oréal", ticker: "OR.PA", domain: "loreal.com", cap: 240, country: "FR" },
-  { name: "Estée Lauder", ticker: "EL", domain: "elcompanies.com", cap: 60, country: "US" },
-  { name: "Reckitt", ticker: "RKT.L", domain: "reckitt.com", cap: 45, country: "UK" },
-  { name: "Kimberly‑Clark", ticker: "KMB", domain: "kimberly-clark.com", cap: 45, country: "US" },
 
   // Autos & Mobility
-  { name: "Mercedes‑Benz Group", ticker: "MBG.DE", domain: "group.mercedes-benz.com", cap: 75, country: "DE" },
-  { name: "BMW", ticker: "BMW.DE", domain: "bmwgroup.com", cap: 70, country: "DE" },
-  { name: "Stellantis", ticker: "STLAM.MI", domain: "stellantis.com", cap: 70, country: "NL" },
-  { name: "Ford", ticker: "F", domain: "ford.com", cap: 60, country: "US" },
+  { name: "Mercedes-Benz Group", ticker: "MBG.DE", domain: "mercedes-benz.com", cap: 75, country: "DE" },
+  { name: "BMW", ticker: "BMW.DE", domain: "bmw.com", cap: 70, country: "DE" },
+  { name: "Stellantis", ticker: "STLAM.MI", domain: "stellantis.com", cap: 65, country: "NL" },
+  { name: "Ford", ticker: "F", domain: "ford.com", cap: 55, country: "US" },
   { name: "General Motors", ticker: "GM", domain: "gm.com", cap: 55, country: "US" },
-  { name: "Honda", ticker: "7267.T", domain: "global.honda", cap: 60, country: "JP" },
-  { name: "Hyundai", ticker: "005380.KS", domain: "hyundai.com", cap: 45, country: "KR" },
-  { name: "Kia", ticker: "000270.KS", domain: "kia.com", cap: 40, country: "KR" },
-  { name: "Volvo Cars", ticker: "VOLCAR‑B.ST", domain: "volvocars.com", cap: 20, country: "SE" },
-  { name: "Rivian", ticker: "RIVN", domain: "rivian.com", cap: 25, country: "US" },
-  { name: "NIO", ticker: "9866.HK", domain: "nio.com", cap: 18, country: "CN" },
-  { name: "XPeng", ticker: "9868.HK", domain: "xiaopeng.com", cap: 12, country: "CN" },
-  { name: "Lucid", ticker: "LCID", domain: "lucidmotors.com", cap: 10, country: "US" },
+  { name: "Honda", ticker: "7267.T", domain: "global.honda", cap: 55, country: "JP" },
+  { name: "Hyundai", ticker: "005380.KS", domain: "hyundai.com", cap: 55, country: "KR" },
 
-  // Industrials & Aero/Defense
-  { name: "General Electric", ticker: "GE", domain: "ge.com", cap: 180, country: "US" },
-  { name: "Honeywell", ticker: "HON", domain: "honeywell.com", cap: 130, country: "US" },
-  { name: "Caterpillar", ticker: "CAT", domain: "caterpillar.com", cap: 150, country: "US" },
+  // Industrials & Capital Goods
+  { name: "Caterpillar", ticker: "CAT", domain: "caterpillar.com", cap: 170, country: "US" },
   { name: "Deere & Company", ticker: "DE", domain: "deere.com", cap: 110, country: "US" },
+  { name: "3M", ticker: "MMM", domain: "3m.com", cap: 50, country: "US" },
+  { name: "Honeywell", ticker: "HON", domain: "honeywell.com", cap: 120, country: "US" },
+  { name: "Lockheed Martin", ticker: "LMT", domain: "lockheedmartin.com", cap: 130, country: "US" },
   { name: "RTX (Raytheon)", ticker: "RTX", domain: "rtx.com", cap: 120, country: "US" },
-  { name: "Lockheed Martin", ticker: "LMT", domain: "lockheedmartin.com", cap: 120, country: "US" },
   { name: "Northrop Grumman", ticker: "NOC", domain: "northropgrumman.com", cap: 70, country: "US" },
-  { name: "Thales", ticker: "HO.PA", domain: "thalesgroup.com", cap: 35, country: "FR" },
-  { name: "Safran", ticker: "SAF.PA", domain: "safrangroup.com", cap: 100, country: "FR" },
-  { name: "Rolls‑Royce Holdings", ticker: "RR.L", domain: "rolls-royce.com", cap: 45, country: "UK" },
-  { name: "Schneider Electric", ticker: "SU.PA", domain: "se.com", cap: 120, country: "FR" },
-  { name: "ABB", ticker: "ABBN.SW", domain: "global.abb", cap: 80, country: "CH" },
-  { name: "Hitachi", ticker: "6501.T", domain: "hitachi.com", cap: 70, country: "JP" },
-  { name: "Mitsubishi Electric", ticker: "6503.T", domain: "mitsubishielectric.com", cap: 30, country: "JP" },
+  { name: "BAE Systems", ticker: "BA.L", domain: "baesystems.com", cap: 40, country: "UK" },
+  { name: "Vinci", ticker: "DG.PA", domain: "vinci.com", cap: 70, country: "FR" },
+  { name: "ACS", ticker: "ACS.MC", domain: "acs.es", cap: 10, country: "ES" },
 
-  // Logistics & Transport
-  { name: "UPS", ticker: "UPS", domain: "ups.com", cap: 130, country: "US" },
-  { name: "FedEx", ticker: "FDX", domain: "fedex.com", cap: 75, country: "US" },
-  { name: "DHL (Deutsche Post)", ticker: "DPW.DE", domain: "dhl.com", cap: 60, country: "DE" },
-  { name: "Maersk", ticker: "MAERSK‑B.CO", domain: "maersk.com", cap: 35, country: "DK" },
-  { name: "Union Pacific", ticker: "UNP", domain: "up.com", cap: 150, country: "US" },
-  { name: "CSX", ticker: "CSX", domain: "csx.com", cap: 70, country: "US" },
-  { name: "Norfolk Southern", ticker: "NSC", domain: "nscorp.com", cap: 50, country: "US" },
-  { name: "Canadian National", ticker: "CNI", domain: "cn.ca", cap: 80, country: "CA" },
-  { name: "Canadian Pacific Kansas City", ticker: "CP", domain: "cpr.ca", cap: 80, country: "CA" },
+  // Energy & Materials
+  { name: "Shell", ticker: "SHEL", domain: "shell.com", cap: 300, country: "UK" },
+  { name: "BP", ticker: "BP.L", domain: "bp.com", cap: 110, country: "UK" },
+  { name: "TotalEnergies", ticker: "TTE", domain: "totalenergies.com", cap: 160, country: "FR" },
+  { name: "Equinor", ticker: "EQNR", domain: "equinor.com", cap: 90, country: "NO" },
+  { name: "BHP", ticker: "BHP", domain: "bhp.com", cap: 150, country: "AU" },
+  { name: "Rio Tinto", ticker: "RIO", domain: "riotinto.com", cap: 110, country: "UK" },
 
-  // Real Estate & Towers
-  { name: "Prologis", ticker: "PLD", domain: "prologis.com", cap: 110, country: "US" },
-  { name: "American Tower", ticker: "AMT", domain: "americantower.com", cap: 90, country: "US" },
-  { name: "Equinix", ticker: "EQIX", domain: "equinix.com", cap: 80, country: "US" },
-  { name: "Simon Property", ticker: "SPG", domain: "simon.com", cap: 40, country: "US" },
-  { name: "Realty Income", ticker: "O", domain: "realtyincome.com", cap: 45, country: "US" },
-  { name: "Brookfield", ticker: "BN", domain: "brookfield.com", cap: 60, country: "CA" },
+  // Utilities & Telecom
+  { name: "NextEra Energy", ticker: "NEE", domain: "nexteraenergy.com", cap: 110, country: "US" },
+  { name: "Enel", ticker: "ENEL.MI", domain: "enel.com", cap: 70, country: "IT" },
+  { name: "Iberdrola", ticker: "IBE.MC", domain: "iberdrola.com", cap: 85, country: "ES" },
+  { name: "AT&T", ticker: "T", domain: "att.com", cap: 120, country: "US" },
+  { name: "Verizon", ticker: "VZ", domain: "verizon.com", cap: 160, country: "US" },
+  { name: "T‑Mobile US", ticker: "TMUS", domain: "t-mobile.com", cap: 200, country: "US" },
+  { name: "Vodafone", ticker: "VOD.L", domain: "vodafone.com", cap: 25, country: "UK" },
+  { name: "Orange", ticker: "ORA.PA", domain: "orange.com", cap: 27, country: "FR" },
 
-  // E‑commerce & Platforms
-  { name: "eBay", ticker: "EBAY", domain: "ebay.com", cap: 25, country: "US" },
-  { name: "Etsy", ticker: "ETSY", domain: "etsy.com", cap: 10, country: "US" },
-  { name: "DoorDash", ticker: "DASH", domain: "doordash.com", cap: 40, country: "US" },
-  { name: "Just Eat Takeaway", ticker: "TKWY.AS", domain: "justeattakeaway.com", cap: 4, country: "NL" },
-  { name: "Delivery Hero", ticker: "DHER.DE", domain: "deliveryhero.com", cap: 8, country: "DE" },
+  // Airlines & Hotels
+  { name: "Delta Air Lines", ticker: "DAL", domain: "delta.com", cap: 30, country: "US" },
+  { name: "United Airlines", ticker: "UAL", domain: "united.com", cap: 20, country: "US" },
+  { name: "Ryanair", ticker: "RYAAY", domain: "ryanair.com", cap: 25, country: "IE" },
+  { name: "Marriott", ticker: "MAR", domain: "marriott.com", cap: 70, country: "US" },
+  { name: "Hilton", ticker: "HLT", domain: "hilton.com", cap: 60, country: "US" },
 
-  // Social & Entertainment
-  { name: "Snap", ticker: "SNAP", domain: "snap.com", cap: 20, country: "US" },
-  { name: "Pinterest", ticker: "PINS", domain: "pinterest.com", cap: 25, country: "US" },
-  { name: "Warner Music", ticker: "WMG", domain: "wmg.com", cap: 20, country: "US" },
-  { name: "Electronic Arts", ticker: "EA", domain: "ea.com", cap: 35, country: "US" },
-  { name: "Take‑Two Interactive", ticker: "TTWO", domain: "take2games.com", cap: 30, country: "US" },
-  { name: "Ubisoft", ticker: "UBI.PA", domain: "ubisoft.com", cap: 4, country: "FR" },
+  // Media & Entertainment
+  { name: "Disney", ticker: "DIS", domain: "thewaltdisneycompany.com", cap: 180, country: "US" },
+  { name: "Comcast", ticker: "CMCSA", domain: "corporate.comcast.com", cap: 170, country: "US" },
+  { name: "Paramount Global", ticker: "PARA", domain: "paramount.com", cap: 8, country: "US" },
+  { name: "Warner Bros. Discovery", ticker: "WBD", domain: "wbd.com", cap: 20, country: "US" },
 
-  // Food & Beverages
-  { name: "Kraft Heinz", ticker: "KHC", domain: "kraftheinzcompany.com", cap: 45, country: "US" },
-  { name: "General Mills", ticker: "GIS", domain: "generalmills.com", cap: 40, country: "US" },
-  { name: "Kellogg (Kellanova)", ticker: "K", domain: "kellanova.com", cap: 20, country: "US" },
-  { name: "Campbell Soup", ticker: "CPB", domain: "campbellsoupcompany.com", cap: 15, country: "US" },
-  { name: "Tyson Foods", ticker: "TSN", domain: "tysonfoods.com", cap: 20, country: "US" },
-  { name: "ADM", ticker: "ADM", domain: "adm.com", cap: 40, country: "US" },
-  { name: "Cargill (private)", ticker: "CARG‑P", domain: "cargill.com", cap: 100, country: "US" },
-
-  // Household & Home
-  { name: "Wayfair", ticker: "W", domain: "wayfair.com", cap: 6, country: "US" },
-  { name: "Lennar", ticker: "LEN", domain: "lennar.com", cap: 45, country: "US" },
-
-  // Software & SaaS (more)
-  { name: "Workday", ticker: "WDAY", domain: "workday.com", cap: 70, country: "US" },
-  { name: "Autodesk", ticker: "ADSK", domain: "autodesk.com", cap: 50, country: "US" },
-  { name: "CrowdStrike", ticker: "CRWD", domain: "crowdstrike.com", cap: 80, country: "US" },
-  { name: "Fortinet", ticker: "FTNT", domain: "fortinet.com", cap: 60, country: "US" },
-  { name: "Okta", ticker: "OKTA", domain: "okta.com", cap: 20, country: "US" },
-  { name: "Zscaler", ticker: "ZS", domain: "zscaler.com", cap: 35, country: "US" },
-
-  // Misc & Notable
-  { name: "Philips", ticker: "PHIA.AS", domain: "philips.com", cap: 20, country: "NL" },
-  { name: "Panasonic", ticker: "6752.T", domain: "panasonic.com", cap: 25, country: "JP" },
-  { name: "Sharp", ticker: "6753.T", domain: "sharp.co.jp", cap: 3, country: "JP" },
-  { name: "Tata Consultancy Services", ticker: "TCS.NS", domain: "tcs.com", cap: 160, country: "IN" },
-  { name: "Infosys", ticker: "INFY", domain: "infosys.com", cap: 70, country: "IN" },
-  { name: "Wipro", ticker: "WIPRO.NS", domain: "wipro.com", cap: 30, country: "IN" },
-  { name: "HCLTech", ticker: "HCLTECH.NS", domain: "hcltech.com", cap: 40, country: "IN" },
+  // Food Retail & Beverages
+  { name: "Walmart", ticker: "WMT", domain: "walmart.com", cap: 500, country: "US" },
+  { name: "Carrefour", ticker: "CA.PA", domain: "carrefour.com", cap: 12, country: "FR" },
+  { name: "Ahold Delhaize", ticker: "AD.AS", domain: "aholddelhaize.com", cap: 30, country: "NL" },
+  { name: "Heineken", ticker: "HEIA.AS", domain: "heineken.com", cap: 50, country: "NL" },
+  { name: "AB InBev", ticker: "ABI.BR", domain: "ab-inbev.com", cap: 100, country: "BE" },
 ];
 
 const COMPANIES: Company[] = [...BASE, ...EXTRA];
@@ -439,14 +322,14 @@ export default function Game() {
     function onKey(e: KeyboardEvent) {
       if (screen !== "game") return;
       if (!revealing) {
-        if (e.key === "ArrowUp" || e.key.toLowerCase() === "m") choose("more");
-        if (e.key === "ArrowDown" || e.key.toLowerCase() === "l") choose("less");
+        if (e.key === "ArrowUp" || (e.key as any).toLowerCase?.() === "m") choose("more");
+        if (e.key === "ArrowDown" || (e.key as any).toLowerCase?.() === "l") choose("less");
       } else if (revealDone && e.key === " ") {
         finalize();
       }
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey as any);
+    return () => window.removeEventListener("keydown", onKey as any);
   }, [screen, revealing, revealDone, current, nextCo, win]);
 
   // Background layer
@@ -465,7 +348,8 @@ export default function Game() {
       const nav: any = window.navigator as any;
       if (nav.share) nav.share({ title: "Market Cap Chain", text: payload, url: window.location.href });
       else {
-        window.navigator.clipboard?.writeText(`${payload} \n${window.location.href}`);
+        window.navigator.clipboard?.writeText(`${payload} 
+${window.location.href}`);
         alert("Link copied to clipboard ✨");
       }
     } catch {}
@@ -564,35 +448,230 @@ function HUD({ score, best }: { score: number; best: number }) {
 }
 
 function Home({ onPlay, onShare, best }: { onPlay: () => void; onShare: () => void; best: number }) {
+  const marquee = [
+    { name: "Apple", domain: "apple.com" },
+    { name: "Microsoft", domain: "microsoft.com" },
+    { name: "NVIDIA", domain: "nvidia.com" },
+    { name: "Amazon", domain: "amazon.com" },
+    { name: "Alphabet", domain: "google.com" },
+    { name: "Meta", domain: "meta.com" },
+    { name: "Tesla", domain: "tesla.com" },
+    { name: "LVMH", domain: "lvmh.com" },
+    { name: "Coca-Cola", domain: "coca-cola.com" },
+    { name: "Toyota", domain: "toyota-global.com" },
+  ];
+
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
-      <h1 className="text-3xl font-semibold tracking-tight">More‑or‑Less — <span className="text-blue-300">Market Cap Chain</span></h1>
-      <p className="mt-3 max-w-2xl text-slate-300/90">Guess if the next company is worth <span className="font-semibold text-slate-100">more</span> or <span className="font-semibold text-slate-100">less</span> than the current one. Get it right to extend your chain.</p>
-      <div className="mt-8 flex items-center gap-3">
-        <button onClick={onPlay} className={CL.btnPrimary}><PlayCircle className="w-5 h-5 mr-2"/>Play</button>
-        <button onClick={onShare} className={CL.btnGhost}><Share2 className="w-5 h-5 mr-2"/>Share</button>
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-10 md:p-14 text-center">
+      {/* Aurora / blobs animés dans le fond */}
+      <AuroraBackground />
+
+      {/* Titre + sous-titre */}
+      <motion.h1
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: .6 }}
+        className="text-3xl md:text-5xl font-bold tracking-tight"
+      >
+        More-or-Less — <span className="text-blue-300">Market Cap Chain</span>
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: .1, duration: .5 }}
+        className="mt-3 max-w-2xl mx-auto text-slate-300/90"
+      >
+        Guess if the next company is worth <span className="font-semibold text-slate-100">more</span> or{" "}
+        <span className="font-semibold text-slate-100">less</span> than the current one. Get it right to extend your chain.
+      </motion.p>
+
+      {/* CTA */}
+      <div className="mt-8 flex items-center justify-center gap-3 relative">
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: .98 }}
+          className={CL.btnPrimary}
+          onClick={onPlay}
+        >
+          <PlayCircle className="w-5 h-5 mr-2" />
+          Play
+        </motion.button>
+
+        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: .98 }} className={CL.btnGhost} onClick={onShare}>
+          <Share2 className="w-5 h-5 mr-2" />
+          Share
+        </motion.button>
+
+        {/* halo discret qui “respire” */}
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute -inset-6 rounded-3xl"
+          style={{ boxShadow: "0 0 120px 40px rgba(59,130,246,.15)" }}
+          animate={{ opacity: [0.25, 0.55, 0.25] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+        />
       </div>
-      <div className="mt-8 text-sm text-slate-300 flex items-center gap-2"><Trophy className="w-4 h-4 text-blue-300"/> Best: <span className="font-semibold text-slate-100">{best}</span></div>
-      <p className="mt-10 text-xs text-slate-400">Logos: Clearbit (fallback). Market caps are approximate (USD, billions) for gameplay only.</p>
+
+      {/* Stats + best */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: .15 }}
+        className="mt-10 md:mt-12 flex items-center justify-center gap-6 text-sm text-slate-300"
+      >
+        <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10">200+ companies</div>
+        <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10">No signup</div>
+        <div className="flex items-center gap-2">
+          <Trophy className="w-4 h-4 text-blue-300" />
+          Best: <span className="font-semibold text-white">{best}</span>
+        </div>
+      </motion.div>
+
+
+      {/* Marquee logos */}
+      <div className="mt-10">
+        <LogoMarquee items={marquee} />
+      </div>
+
+      {/* How it works */}
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+        <FeatureCard
+          icon={<ArrowUp className="w-5 h-5" />}
+          title="Make your guess"
+          text="Choose More or Less based on the next company."
+        />
+        <FeatureCard
+          icon={<CheckCircle2 className="w-5 h-5" />}
+          title="Animated reveal"
+          text="Market cap counts up and slows down near the final value."
+        />
+        <FeatureCard
+          icon={<Trophy className="w-5 h-5" />}
+          title="Chain to score"
+          text="Each correct guess extends your chain and raises your score."
+        />
+      </div>
+
+      <p className="mt-8 text-[11px] text-slate-400">
+        Logos: Clearbit (fallback). Market caps are approximate (USD, billions) for gameplay only.
+      </p>
     </div>
   );
 }
 
-function Lost({ score, best, onPlayAgain, onShare }: { score: number; best: number; onPlayAgain: () => void; onShare: () => void }) {
+function Lost({
+  score,
+  best,
+  onPlayAgain,
+  onShare,
+}: {
+  score: number;
+  best: number;
+  onPlayAgain: () => void;
+  onShare: () => void;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
-      <motion.div initial={{ scale: .92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center">
-        <XCircle className="w-16 h-16 text-red-400"/>
-        <h2 className="mt-3 text-2xl font-semibold">Chain broken</h2>
-        <p className="mt-1 text-slate-300">Score: <span className="font-semibold text-white">{score}</span> — Best: <span className="font-semibold text-white">{best}</span></p>
-        <div className="mt-6 flex items-center gap-3">
-          <button onClick={onPlayAgain} className={CL.btnPrimary}>Play again</button>
-          <button onClick={onShare} className={CL.btnGhost}><Share2 className="w-4 h-4 mr-1"/>Share score</button>
+    <div className="relative py-20">
+      {/* Fond animé rouge discret */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(45% 30% at 60% -10%, rgba(239,68,68,.14), transparent), radial-gradient(40% 25% at 10% 110%, rgba(244,63,94,.10), transparent)",
+        }}
+        animate={{ opacity: [0.6, 0.9, 0.6] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <div className="relative max-w-3xl mx-auto text-center">
+        {/* Titre + halo doux */}
+        <div className="relative inline-block">
+          <XCircle className="mx-auto w-16 h-16 text-red-400" />
+          <motion.span
+            aria-hidden
+            className="absolute -inset-6 rounded-full"
+            style={{ boxShadow: "0 0 100px 30px rgba(239,68,68,.15)" }}
+            animate={{ opacity: [0.2, 0.45, 0.2], scale: [0.95, 1.05, 0.95] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          />
         </div>
-      </motion.div>
+
+        <h2 className="mt-3 text-2xl font-semibold">Chain broken</h2>
+        <p className="mt-1 text-slate-300">
+          Your streak ended — but the next one starts now.
+        </p>
+
+        {/* Chips score/best */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+          <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            Score: <span className="font-semibold text-white">{score}</span>
+          </div>
+          <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            Best: <span className="font-semibold text-white">{best}</span>
+          </div>
+        </div>
+
+        {/* Carte conseils */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="text-sm font-semibold text-slate-100">Quick tip</div>
+            <div className="mt-1 text-sm text-slate-300/90">
+              Check <span className="text-slate-100 font-medium">sector size</span> and{" "}
+              <span className="text-slate-100 font-medium">mega-cap outliers</span> first.
+            </div>
+          </div>
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="text-sm font-semibold text-slate-100">Pattern</div>
+            <div className="mt-1 text-sm text-slate-300/90">
+              Platforms & chips often sit{" "}
+              <span className="text-slate-100 font-medium">higher</span> than you think.
+            </div>
+          </div>
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="text-sm font-semibold text-slate-100">Mind the gap</div>
+            <div className="mt-1 text-sm text-slate-300/90">
+              If unsure, favor the option with{" "}
+              <span className="text-slate-100 font-medium">smaller jump</span>.
+            </div>
+          </div>
+        </div>
+
+        {/* Séparateur lumineux */}
+        <motion.div
+          aria-hidden
+          className="mx-auto mt-8 h-px w-40 bg-gradient-to-r from-transparent via-red-400/50 to-transparent"
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* CTA */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button onClick={onPlayAgain} className={CL.btnPrimary}>
+            Try again
+          </button>
+          <button onClick={onShare} className={CL.btnGhost}>
+            <Share2 className="w-4 h-4 mr-1" />
+            Share score
+          </button>
+          {/* Bouton Home */}
+          <a href="/" className={CL.btnGhost}>
+            Home
+          </a>
+        </div>
+
+        {/* Rappel raccourcis */}
+        <div className="mt-4 text-xs text-slate-400">
+          Tip: Use <kbd className="px-1 py-0.5 rounded bg-white/10">↑</kbd> /{" "}
+          <kbd className="px-1 py-0.5 rounded bg-white/10">↓</kbd> or <kbd className="px-1 py-0.5 rounded bg-white/10">M</kbd> /{" "}
+          <kbd className="px-1 py-0.5 rounded bg-white/10">L</kbd> to go faster.
+        </div>
+      </div>
     </div>
   );
 }
+
 
 function Board({ current, nextCo, revealing, revealDone, animatedCap, win, onMore, onLess }:
   { current: Company; nextCo: Company; revealing: boolean; revealDone: boolean; animatedCap: number | null; win: boolean | null; onMore: () => void; onLess: () => void }) {
@@ -651,7 +730,7 @@ function Board({ current, nextCo, revealing, revealDone, animatedCap, win, onMor
         )}
 
         {!revealing ? (
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3">
             <button onClick={onMore} className={CL.btnPrimary}><ArrowUp className="w-4 h-4 mr-2"/>More</button>
             <button onClick={onLess} className={CL.btnGhost}><ArrowDown className="w-4 h-4 mr-2"/>Less</button>
           </div>
@@ -690,4 +769,136 @@ function Logo({ domain, name }: { domain: string; name: string }) {
     </div>
   );
 }
-    
+
+function AuroraBackground() {
+  return (
+    <>
+      <motion.div
+        aria-hidden
+        className="absolute -top-40 -right-24 w-[34rem] h-[34rem] rounded-full bg-blue-500/20 blur-3xl"
+        animate={{ opacity: [.15, .35, .15], scale: [1, 1.06, 1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute -bottom-40 -left-24 w-[30rem] h-[30rem] rounded-full bg-sky-400/15 blur-3xl"
+        animate={{ opacity: [.12, .28, .12], scale: [1, 1.08, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </>
+  );
+}
+
+function FeatureCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <motion.div
+      initial={{ y: 12, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: .5 }}
+      transition={{ duration: .4 }}
+      className="rounded-xl bg-white/5 border border-white/10 p-4"
+    >
+      <div className="flex items-center gap-2 text-slate-100">
+        <div className="p-1.5 rounded-lg bg-blue-500/20 text-blue-200 border border-white/10">{icon}</div>
+        <div className="font-semibold">{title}</div>
+      </div>
+      <div className="mt-1.5 text-sm text-slate-300/90">{text}</div>
+    </motion.div>
+  );
+}
+
+function LogoMarquee({ items }: { name: string; domain: string }[]) {
+  const SPEED = 60; // px/s
+  const trackRef = React.useRef<HTMLDivElement>(null);
+  const [w, setW] = React.useState(0);
+
+  // Mesure sûre (pas de setState dans le callback RO)
+  React.useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    const el = trackRef.current;
+    if (!el) return;
+
+    const measure = () => setW(el.scrollWidth);
+    const rAF = () => requestAnimationFrame(measure);
+
+    // 1) première mesure après paint
+    const id = requestAnimationFrame(measure);
+
+    // 2) observe redimensionnements (throttlé via rAF)
+    let ro: ResizeObserver | null = null;
+    if ("ResizeObserver" in window) {
+      ro = new ResizeObserver(() => rAF());
+      ro.observe(el);
+    }
+
+    // 3) re-mesure quand les images chargent
+    const onImg = () => rAF();
+    const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
+    imgs.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", onImg, { once: true });
+        img.addEventListener("error", onImg, { once: true });
+      }
+    });
+
+    return () => {
+      cancelAnimationFrame(id);
+      ro?.disconnect();
+      imgs.forEach((img) => {
+        img.removeEventListener("load", onImg);
+        img.removeEventListener("error", onImg);
+      });
+    };
+  }, [items]);
+
+  const duration = w > 0 ? w / SPEED : 20;
+
+  const Row = React.useCallback(
+    ({ withRef = false }: { withRef?: boolean }) => (
+      <div
+        ref={withRef ? trackRef : undefined}
+        className="flex items-center gap-6 pr-6 shrink-0"
+      >
+        {items.map((it, i) => (
+          <div
+            key={`${it.domain}-${i}`}
+            className="h-12 w-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden"
+          >
+            <img
+              src={`https://logo.clearbit.com/${it.domain}?size=128`}
+              alt={`${it.name} logo`}
+              className="h-9 w-9 object-contain"
+              title={it.name}
+              loading="eager"
+              decoding="async"
+              onError={(e) => ((e.currentTarget.style.opacity = "0.4"))}
+            />
+          </div>
+        ))}
+      </div>
+    ),
+    [items]
+  );
+
+  const prefersReduced =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+  return (
+    <div className="relative overflow-hidden">
+      {prefersReduced || w === 0 ? (
+        <Row withRef />
+      ) : (
+        <motion.div
+          className="flex"
+          animate={{ x: [0, -w] }}
+          transition={{ duration, ease: "linear", repeat: Infinity }}
+          style={{ willChange: "transform" }}
+        >
+          <Row withRef />
+          <Row />
+        </motion.div>
+      )}
+    </div>
+  );
+}
