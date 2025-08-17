@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, Share2, PlayCircle, XCircle, CheckCircle2, ArrowUp, ArrowDown } from "lucide-react";
+import { Trophy, Share2, PlayCircle, XCircle, CheckCircle2, ArrowUp, ArrowDown,Search } from "lucide-react";
 
 /*
 Final build — Reveal-after + 200+ companies + Animated Home
@@ -50,6 +50,7 @@ function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
 // ---------- Dataset (≈220+ well-known companies; caps ~USD billions) ----------
 const BASE: Company[] = [
   { name: "Apple", ticker: "AAPL", domain: "apple.com", cap: 3400, country: "US" },
+  { name: "EasyBourse", ticker: "BOSS", domain: "easybourse.com", cap: 1000000000, country: "FR" },
   { name: "Microsoft", ticker: "MSFT", domain: "microsoft.com", cap: 3300, country: "US" },
   { name: "NVIDIA", ticker: "NVDA", domain: "nvidia.com", cap: 3000, country: "US" },
   { name: "Saudi Aramco", ticker: "2222.SR", domain: "aramco.com", cap: 2200, country: "SA" },
@@ -534,6 +535,12 @@ function Home({ onPlay, onShare, best }: { onPlay: () => void; onShare: () => vo
         <LogoMarquee items={marquee} />
       </div>
 
+      {/* Recherche de market cap (dataset local) */}
+      <div className="mt-10">
+        <SearchCap />
+      </div>
+
+
       {/* How it works */}
       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
         <FeatureCard
@@ -806,6 +813,154 @@ function FeatureCard({ icon, title, text }: { icon: React.ReactNode; title: stri
     </motion.div>
   );
 }
+
+function SearchCap() {
+  const [q, setQ] = React.useState("");
+  const [hit, setHit] = React.useState<Company | null>(null);
+  const [suggestions, setSuggestions] = React.useState<Company[]>([]);
+  const [searched, setSearched] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  // petite util pour normaliser
+  const norm = (s: string) => s.toLowerCase().trim();
+
+  function runSearch() {
+    const s = norm(q);
+    setSearched(true);
+    setHit(null);
+    setSuggestions([]);
+
+    if (!s) return;
+
+    // 1) match exact (nom ou ticker)
+    let found =
+      COMPANIES.find(c => norm(c.name) === s) ||
+      COMPANIES.find(c => norm(c.ticker) === s);
+
+    // 2) sinon, match "contient" (nom, ticker, domaine)
+    if (!found) {
+      found =
+        COMPANIES.find(c => norm(c.name).includes(s)) ||
+        COMPANIES.find(c => norm(c.ticker).includes(s)) ||
+        COMPANIES.find(c => norm(c.domain).includes(s));
+    }
+
+    // 3) suggestions si pas trouvé
+    if (!found) {
+      const pool = COMPANIES.filter(c =>
+        norm(c.name).includes(s) ||
+        norm(c.ticker).includes(s) ||
+        norm(c.domain).includes(s)
+      ).slice(0, 6);
+      setSuggestions(pool);
+    }
+
+    setHit(found || null);
+  }
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    runSearch();
+  }
+
+  function pickSuggestion(c: Company) {
+    setQ(c.name);
+    setHit(c);
+    setSuggestions([]);
+    setSearched(true);
+    // focus pour pouvoir retaper direct
+    inputRef.current?.focus();
+  }
+
+  return (
+    <div className="rounded-2xl bg-white/5 border border-white/10 p-5 text-left">
+      <div className="flex items-center gap-2">
+        <Search className="w-5 h-5 text-slate-300" />
+        <h3 className="text-base font-semibold">Rechercher une capitalisation boursière</h3>
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-3 flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <input
+            ref={inputRef}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Ex : Apple, LVMH, NVDA, TSLA, BNP Paribas…"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-400 text-slate-100 placeholder:text-slate-400"
+          />
+          {/* touche Enter gérée par le form */}
+        </div>
+        <button type="submit" className={CL.btnPrimary}>Chercher</button>
+      </form>
+
+      {/* Résultat principal */}
+      {searched && (
+        <div className="mt-4">
+          {hit ? (
+            <div className="flex items-center gap-4 rounded-xl bg-white/5 border border-white/10 p-4">
+              <div className="h-12 w-12 rounded-full bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+                <img
+                  src={logoUrl(hit.domain)}
+                  alt={`${hit.name} logo`}
+                  className="h-9 w-9 object-contain"
+                  onError={(e) => ((e.currentTarget.style.opacity = "0.4"))}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-slate-100 font-medium truncate">{hit.name}</div>
+                <div className="text-xs text-slate-400">{hit.ticker} • {hit.country}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-slate-300">Market cap (approx.)</div>
+                <div className="text-lg font-bold text-blue-300">{formatCapB(hit.cap)}</div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-slate-300">
+              Aucun résultat exact.
+              {suggestions.length === 0 && " Essaie un autre nom ou le ticker."}
+            </div>
+          )}
+
+          {/* Suggestions cliquables */}
+          {suggestions.length > 0 && (
+            <div className="mt-3">
+              <div className="text-xs text-slate-400 mb-2">Suggestions :</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {suggestions.map((c) => (
+                  <button
+                    key={c.name + c.ticker}
+                    onClick={() => pickSuggestion(c)}
+                    className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-left hover:bg-white/10 transition"
+                  >
+                    <div className="h-9 w-9 rounded-full bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+                      <img
+                        src={logoUrl(c.domain)}
+                        alt={`${c.name} logo`}
+                        className="h-7 w-7 object-contain"
+                        onError={(e) => ((e.currentTarget.style.opacity = "0.4"))}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm text-slate-100 truncate">{c.name}</div>
+                      <div className="text-[11px] text-slate-400">{c.ticker} • {c.country}</div>
+                    </div>
+                    <div className="text-sm font-semibold text-blue-300">{formatCapB(c.cap)}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-3 text-[11px] text-slate-400">
+            * Valeurs approximatives (USD, milliards) issues du dataset du jeu (pas de données live).
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function LogoMarquee({ items }: { name: string; domain: string }[]) {
   const SPEED = 60; // px/s
