@@ -1027,20 +1027,30 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
   );
 
 
-  const prefersReduced =
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // (1) on n’utilise plus prefers-reduced-motion ici pour être sûr que ça défile
+ //     si tu veux respecter la préférence OS, remets ton test plus tard.
+  const shouldAnimate = w > 0;
+
+  React.useEffect(() => {
+    // re-mesure sur resize (utile sur mobile / zoom)
+    const onResize = () => {
+      const el = trackRef.current;
+      if (el) setW(el.scrollWidth);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   return (
     <div className="relative overflow-hidden">
-      {prefersReduced || w === 0 ? (
+      {!shouldAnimate ? (
         <Row withRef />
       ) : (
         <motion.div
+          key={w}                         // (2) relance l’animation quand w change
           className="flex"
           animate={{ x: [0, -w] }}
-          transition={{ duration: w / SPEED, ease: "linear", repeat: Infinity }}
+          transition={{ duration: w / SPEED, ease: "linear", repeat: Infinity, repeatType: "loop" }}
           style={{ willChange: "transform" }}
         >
           <Row withRef />
@@ -1049,7 +1059,6 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
       )}
     </div>
   );
-
 }
 
 
