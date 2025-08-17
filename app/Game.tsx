@@ -962,32 +962,29 @@ function SearchCap() {
 }
 
 
-function LogoMarquee({ items }: { name: string; domain: string }[]) {
-  const SPEED = 60; // px/s
+// Remplace TOUT ton LogoMarquee par cette version
+function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
+  const SPEED = 60; // px/sec
   const trackRef = React.useRef<HTMLDivElement>(null);
   const [w, setW] = React.useState(0);
 
-  // Mesure sûre (pas de setState dans le callback RO)
   React.useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const el = trackRef.current;
     if (!el) return;
 
     const measure = () => setW(el.scrollWidth);
-    const rAF = () => requestAnimationFrame(measure);
+    const rafMeasure = () => requestAnimationFrame(measure);
 
-    // 1) première mesure après paint
     const id = requestAnimationFrame(measure);
 
-    // 2) observe redimensionnements (throttlé via rAF)
     let ro: ResizeObserver | null = null;
     if ("ResizeObserver" in window) {
-      ro = new ResizeObserver(() => rAF());
+      ro = new ResizeObserver(() => rafMeasure());
       ro.observe(el);
     }
 
-    // 3) re-mesure quand les images chargent
-    const onImg = () => rAF();
+    const onImg = () => rafMeasure();
     const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
     imgs.forEach((img) => {
       if (!img.complete) {
@@ -1008,36 +1005,28 @@ function LogoMarquee({ items }: { name: string; domain: string }[]) {
 
   const duration = w > 0 ? w / SPEED : 20;
 
-  const Row = React.useCallback(
-    ({ withRef = false }: { withRef?: boolean }) => (
-      <div
-        ref={withRef ? trackRef : undefined}
-        className="flex items-center gap-6 pr-6 shrink-0"
-      >
-        {items.map((it, i) => (
-          <div
-            key={`${it.domain}-${i}`}
-            className="h-12 w-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden"
-          >
-            <img
-              src={`https://logo.clearbit.com/${it.domain}?size=128`}
-              alt={`${it.name} logo`}
-              className="h-9 w-9 object-contain"
-              title={it.name}
-              loading="eager"
-              decoding="async"
-              onError={(e) => ((e.currentTarget.style.opacity = "0.4"))}
-            />
-          </div>
-        ))}
-      </div>
-    ),
-    [items]
+  const Row = ({ withRef = false }: { withRef?: boolean }) => (
+    <div ref={withRef ? trackRef : undefined} className="flex items-center gap-6 pr-6 shrink-0">
+      {items.map((it, i) => (
+        <div key={`${it.domain}-${i}`} className="h-12 w-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+          <img
+            src={`https://logo.clearbit.com/${it.domain}?size=128`}
+            alt={`${it.name} logo`}
+            className="h-9 w-9 object-contain"
+            title={it.name}
+            loading="eager"
+            decoding="async"
+            onError={(e) => ((e.currentTarget.style.opacity = "0.4"))}
+          />
+        </div>
+      ))}
+    </div>
   );
 
   const prefersReduced =
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   return (
     <div className="relative overflow-hidden">
@@ -1057,3 +1046,7 @@ function LogoMarquee({ items }: { name: string; domain: string }[]) {
     </div>
   );
 }
+
+
+
+
