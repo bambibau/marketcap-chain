@@ -1006,13 +1006,16 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
   const duration = w > 0 ? w / SPEED : 20;
 
   const Row = ({ withRef = false }: { withRef?: boolean }) => (
-    <div ref={withRef ? trackRef : undefined} className="flex items-center gap-6 pr-6 shrink-0">
+    <div
+      ref={withRef ? trackRef : undefined}
+      className="flex items-center gap-8 pr-8 shrink-0 w-max"
+    >
       {items.map((it, i) => (
-        <div key={`${it.domain}-${i}`} className="h-12 w-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+        <div key={`${it.domain}-${i}`} className="h-8 flex items-center">
           <img
             src={`https://logo.clearbit.com/${it.domain}?size=128`}
             alt={`${it.name} logo`}
-            className="h-9 w-9 object-contain"
+            className="h-8 w-auto object-contain opacity-80 hover:opacity-100 transition"
             title={it.name}
             loading="eager"
             decoding="async"
@@ -1023,10 +1026,11 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
     </div>
   );
 
+
   const prefersReduced =
-  typeof window !== "undefined" &&
-  typeof window.matchMedia === "function" &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   return (
     <div className="relative overflow-hidden">
@@ -1036,7 +1040,7 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
         <motion.div
           className="flex"
           animate={{ x: [0, -w] }}
-          transition={{ duration, ease: "linear", repeat: Infinity }}
+          transition={{ duration: w / SPEED, ease: "linear", repeat: Infinity }}
           style={{ willChange: "transform" }}
         >
           <Row withRef />
@@ -1045,6 +1049,7 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
       )}
     </div>
   );
+
 }
 
 

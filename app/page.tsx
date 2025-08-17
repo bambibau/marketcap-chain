@@ -46,30 +46,25 @@ export default function Page() {
       <Game />
 
       {/* Section texte SEO sous le héros/jeu */}
-      <section
-        aria-labelledby="what-is"
-        className="mt-12 prose prose-invert max-w-3xl mx-auto"
-      >
-        <h2 id="what-is">Qu’est-ce que “More-or-Less — Market Cap Chain” ?</h2>
-        <p>
-          Un mini-jeu gratuit de culture financière : compare la capitalisation
-          boursière d’Apple, Microsoft, NVIDIA, LVMH, etc. Devine si la
-          prochaine entreprise vaut <strong>plus</strong> ou{" "}
-          <strong>moins</strong> que l’actuelle, et enchaîne les bonnes réponses
-          pour battre ton record.
-        </p>
-        <h3>Fonctionnement</h3>
-        <ul>
-          <li>200+ entreprises connues (caps approximatives en milliards USD).</li>
-          <li>Révélation animée de la market cap, score et meilleur score sauvegardé.</li>
-          <li>Partage rapide du résultat sur mobile et desktop.</li>
-        </ul>
-        <h3>Pourquoi c’est fun ?</h3>
-        <p>
-          Tu t’habitues aux ordres de grandeur des secteurs (tech, luxe, énergie,
-          banques…). Idéal pour réviser avant un entretien ou juste t’amuser.
-        </p>
+      <section aria-labelledby="about" className="mt-10">
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-5 md:p-6">
+          <h2 id="about" className="sr-only">À propos du jeu</h2>
+          <p className="text-sm text-slate-300/90">
+            Devine si la prochaine entreprise vaut <span className="text-slate-100 font-medium">plus</span> ou
+            <span className="text-slate-100 font-medium"> moins</span> que l’actuelle. 200+ sociétés, reveal animé,
+            score sauvegardé. Pas d’inscription.
+          </p>
+          <details className="mt-2">
+            <summary className="text-xs text-slate-400 hover:text-slate-300 cursor-pointer">En savoir plus</summary>
+            <ul className="mt-2 text-xs text-slate-400/90 space-y-1">
+              <li>Tech, luxe, énergie, banques…</li>
+              <li>Caps approximatives (milliards USD) — pour le fun.</li>
+              <li>Highscore stocké en localStorage.</li>
+            </ul>
+          </details>
+        </div>
       </section>
+
     </main>
   );
 }
