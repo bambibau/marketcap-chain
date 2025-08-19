@@ -962,29 +962,32 @@ function SearchCap() {
 }
 
 
-// Remplace TOUT ton LogoMarquee par cette version
 function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
+  const DUP_FACTOR = 3; // essaie 3 ou 4 selon ce que tu préfères
+  const renderItems = React.useMemo(
+    () => Array.from({ length: DUP_FACTOR }).flatMap(() => items),
+    [items]
+  );
   const SPEED = 60; // px/sec
   const trackRef = React.useRef<HTMLDivElement>(null);
   const [w, setW] = React.useState(0);
 
+  // Mesure initiale + quand images / taille changent
   React.useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const el = trackRef.current;
     if (!el) return;
 
     const measure = () => setW(el.scrollWidth);
-    const rafMeasure = () => requestAnimationFrame(measure);
-
-    const id = requestAnimationFrame(measure);
+    const rafId = requestAnimationFrame(measure);
 
     let ro: ResizeObserver | null = null;
     if ("ResizeObserver" in window) {
-      ro = new ResizeObserver(() => rafMeasure());
+      ro = new ResizeObserver(measure);
       ro.observe(el);
     }
 
-    const onImg = () => rafMeasure();
+    const onImg = () => measure();
     const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
     imgs.forEach((img) => {
       if (!img.complete) {
@@ -994,7 +997,7 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
     });
 
     return () => {
-      cancelAnimationFrame(id);
+      cancelAnimationFrame(rafId);
       ro?.disconnect();
       imgs.forEach((img) => {
         img.removeEventListener("load", onImg);
@@ -1003,14 +1006,38 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
     };
   }, [items]);
 
-  const duration = w > 0 ? w / SPEED : 20;
+  // (3) Secours : si w reste 0, re-mesure un peu plus tard
+  React.useEffect(() => {
+    if (w === 0) {
+      const id = setTimeout(() => {
+        const el = trackRef.current;
+        if (el) setW(el.scrollWidth);
+      }, 150);
+      return () => clearTimeout(id);
+    }
+  }, [w]);
 
-  const Row = ({ withRef = false }: { withRef?: boolean }) => (
+  // Re-mesure sur resize / zoom
+  React.useEffect(() => {
+    const onResize = () => {
+      const el = trackRef.current;
+      if (el) setW(el.scrollWidth);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Une rangée (sans cercle, avec espacement)
+  const Row = ({
+    withRef = false,
+    className = "",
+  }: { withRef?: boolean; className?: string }) => (
     <div
       ref={withRef ? trackRef : undefined}
-      className="flex items-center gap-8 pr-8 shrink-0 w-max"
+      className={`flex items-center gap-8 shrink-0 w-max ${className}`}
     >
-      {items.map((it, i) => (
+      {renderItems.map((it, i) => (
+
         <div key={`${it.domain}-${i}`} className="h-8 flex items-center">
           <img
             src={`https://logo.clearbit.com/${it.domain}?size=128`}
@@ -1026,40 +1053,32 @@ function LogoMarquee({ items }: { items: { name: string; domain: string }[] }) {
     </div>
   );
 
+  // Si on n'a pas encore la largeur, rendu statique
+  if (w === 0) {
+    return (
+      <div className="relative overflow-hidden">
+        <Row withRef />
+      </div>
+    );
+  }
 
-  // (1) on n’utilise plus prefers-reduced-motion ici pour être sûr que ça défile
- //     si tu veux respecter la préférence OS, remets ton test plus tard.
-  const shouldAnimate = w > 0;
-
-  React.useEffect(() => {
-    // re-mesure sur resize (utile sur mobile / zoom)
-    const onResize = () => {
-      const el = trackRef.current;
-      if (el) setW(el.scrollWidth);
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
+  // (2) Animation continue + jointure propre (ml-8 = l'espace du gap)
   return (
     <div className="relative overflow-hidden">
-      {!shouldAnimate ? (
+      <motion.div
+        key={w} // redémarre l’anim dès que la largeur est connue / change
+        className="flex"
+        animate={{ x: [0, -w] }}
+        transition={{ duration: w / SPEED, ease: "linear", repeat: Infinity, repeatType: "loop" }}
+        style={{ willChange: "transform" }}
+      >
         <Row withRef />
-      ) : (
-        <motion.div
-          key={w}                         // (2) relance l’animation quand w change
-          className="flex"
-          animate={{ x: [0, -w] }}
-          transition={{ duration: w / SPEED, ease: "linear", repeat: Infinity, repeatType: "loop" }}
-          style={{ willChange: "transform" }}
-        >
-          <Row withRef />
-          <Row />
-        </motion.div>
-      )}
+        <Row className="ml-8" />
+      </motion.div>
     </div>
   );
 }
+
 
 
 
