@@ -50,7 +50,6 @@ function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
 // ---------- Dataset (≈220+ well-known companies; caps ~USD billions) ----------
 const BASE: Company[] = [
   { name: "Apple", ticker: "AAPL", domain: "apple.com", cap: 3440, country: "US" },
-  { name: "EasyBourse", ticker: "BOSS", domain: "easybourse.com", cap: 10000000, country: "FR" },
   { name: "Microsoft", ticker: "MSFT", domain: "microsoft.com", cap: 3870, country: "US" },
   { name: "NVIDIA", ticker: "NVDA", domain: "nvidia.com", cap: 4400, country: "US" },
   { name: "Saudi Aramco", ticker: "2222.SR", domain: "aramco.com", cap: 1550, country: "SA" },
