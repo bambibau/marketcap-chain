@@ -875,7 +875,7 @@ function SearchCap() {
     <div className="rounded-2xl bg-white/5 border border-white/10 p-5 text-left">
       <div className="flex items-center gap-2">
         <Search className="w-5 h-5 text-slate-300" />
-        <h3 className="text-base font-semibold">Rechercher une capitalisation boursière</h3>
+        <h3 className="text-base font-semibold">Search for a market cap</h3>
       </div>
 
       <form onSubmit={onSubmit} className="mt-3 flex flex-col sm:flex-row gap-3">
@@ -889,7 +889,7 @@ function SearchCap() {
           />
           {/* touche Enter gérée par le form */}
         </div>
-        <button type="submit" className={CL.btnPrimary}>Chercher</button>
+        <button type="submit" className={CL.btnPrimary}>Search</button>
       </form>
 
       {/* Résultat principal */}
@@ -916,8 +916,8 @@ function SearchCap() {
             </div>
           ) : (
             <div className="text-sm text-slate-300">
-              Aucun résultat exact.
-              {suggestions.length === 0 && " Essaie un autre nom ou le ticker."}
+              No exact match.
+              {suggestions.length === 0 && " Try another name or ticker."}
             </div>
           )}
 
@@ -952,7 +952,7 @@ function SearchCap() {
           )}
 
           <div className="mt-3 text-[11px] text-slate-400">
-            * Valeurs approximatives (USD, milliards) issues du dataset du jeu (pas de données live).
+            * Approximate values (USD, billions) from the game dataset (not live data).
           </div>
         </div>
       )}
